@@ -1,0 +1,31 @@
+/* 
+    Created on : Jul 19, 2014, 12:15:47 PM
+    Author     : Ivan
+*/
+canvas {
+    /*position: fixed;
+    top: 10px;
+    left: 10px;
+    border-width: medium;
+    border-color: red;
+    width: 1024px;
+    height: 768px;*/
+}
+div#WebGLoutput {
+    position: fixed;
+    /*top: 10px;
+    left: 10px;*/
+    border-width: medium;
+    border-color: red;
+    width: 1024px;
+    height: 768px;
+}
+div#statsoutput {
+    position: absolute;
+    left:1000px;
+}
+div#controloutput {
+    position: absolute;
+    //float:right;
+    right:10px;
+}

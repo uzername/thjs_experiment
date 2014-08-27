@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Three.js  example (simple interior)</title>
+        <script src = "lib/three.min.js"> </script>
+        <script type="text/javascript" src="lib/Stats.js"></script>
+        <script type='text/javascript' src='lib/dat.gui.min.js'></script>
+        <link rel="stylesheet" type="text/css" href="thjssc_style.css">
+       <!-- <script type="text/javascript" src="thjssc_mainfunc.js"> </script> -->
+       <script type="text/javascript" src="mouse.js"> </script>
+    </head>
+    <body>
+        <div id="statsoutput"> </div>
+        <div>Camera is controlled by mouse (no pointerlock)</div>
+        <div id="WebGLoutput"> &nspar;
+           <div id="controloutput"> </div>
+        </div>
+        <script src="thjssc_mainfunc2.js"></script>
+        <script src="SceneConstructor.js"></script>
+        <script type="text/javascript"> 
+            defSkyBox();
+            defScene();
+            console.log(camera.position);
+            console.log( cameraTurnAngleDeg+"//"+Math.cos(cameraTurnAngleDeg)+"//"+Math.sin(cameraTurnAngleDeg));
+            //launch when scene init is done
+            render();
+            
+        </script>
+    </body>
+</html>
