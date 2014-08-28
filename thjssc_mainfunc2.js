@@ -5,7 +5,8 @@
 var height = window.innerHeight;*/
 var width = document.getElementById("WebGLoutput").offsetWidth;
 var height = document.getElementById("WebGLoutput").offsetHeight;
-var renderer; var scene; var camera; var gui; var neck;
+var renderer; var scene; var camera; var gui; var neck; 
+var MovingCube; //collision detect mesh
 var cube; 
 var controls = new function() {
     this.rotationSpeed = 0.25;
@@ -81,6 +82,21 @@ function processCollision(moveDirection) {
             dirStmtZ = Math.round(myUnitSz/4);
             break;        }
     }
+        console.log ("collision check");
+    	var originPoint = MovingCube.position.clone();
+        for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++) {
+                    console.log(vertexIndex+"!");
+		var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
+		var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
+		var directionVector = globalVertex.sub( MovingCube.position );
+                 
+		//console.log(directionVector.clone().normalize()); 
+		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+		var collisionResults = ray.intersectObjects( myLevelStruct.Cubes );
+                //console.log(collisionResults);
+		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+			console.log(" Hit ");
+	}
     return false;
 }
 //--Keyboard handling-- 

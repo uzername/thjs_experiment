@@ -209,10 +209,18 @@ function addCamera() {
             //neck.rotateOnAxis(new THREE.Vector3(1, 0, 0), degInRad(90));
             //neck.up = new THREE.Vector3(0, 0, 1);
     neck.up = new THREE.Vector3(0, 1, 0);
+        var cubeGeometry = new THREE.CubeGeometry(myUnitSz,myUnitSz,myUnitSz,1,1,1);
+	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe:true } );
+	MovingCube = new THREE.Mesh( cubeGeometry, wireMaterial );
+        MovingCube.position.x = neck.position.x;
+        MovingCube.position.z = neck.position.z;
+        MovingCube.position.y = neck.position.y;
+        neck.add(MovingCube);
     console.log("handler position: "+neck.position.x+";"+neck.position.y+";"+neck.position.z);        
     neck.add(camera);
     scene.add(neck);
     //also need to add some another mesh object to neck, for collision detection, like on http://stemkoski.github.io/Three.js/Collision-Detection.html
+    //done. see MovingCube
 }        
 function defScene() {
     yobaplane2=defPlane(15*myUnitSz, 15*myUnitSz, new THREE.Vector3(90,0,0), 'graphon/FloorStreets.jpg', new function() {this.x=15; this.y=15}, new THREE.Vector3(0,0,0));
