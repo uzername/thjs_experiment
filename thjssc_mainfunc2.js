@@ -63,12 +63,11 @@ function initStats() {
 }
 /**
  * This function uses myLevelStruct from SceneConstructor to predict collisions during movement
- * @param {String} moveDirection - at what direction to predict collision
- * @returns {Boolean}
  */
-function processCollision(moveDirection) {
+function processCollision(/*moveDirection*/) {
     var dirStmtX=0; var dirStmtZ=0; var dirStmtY=0;
-    switch (moveDirection) {
+    var movementPredict = new Array(true,true,true,true); //Where can we move: south, north, east, west (globally in the 3d world. 'true' means that there's no obstacle in thst dir)
+    /*switch (moveDirection) {
     case "forward": {
             dirStmtZ = -Math.round(myUnitSz/4);
             break;        }
@@ -81,52 +80,56 @@ function processCollision(moveDirection) {
     case "back": {
             dirStmtZ = Math.round(myUnitSz/4);
             break;        }
-    }
+    }*/
         console.log ("collision check");
-    	var originPoint = MovingCube.position.clone();
-        for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++) {
-                    console.log(vertexIndex+"!");
-		var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
-		var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
-		var directionVector = globalVertex.sub( MovingCube.position );
-                 
-		//console.log(directionVector.clone().normalize()); 
-		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-		var collisionResults = ray.intersectObjects( myLevelStruct.Cubes );
-                //console.log(collisionResults);
-		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-			console.log(" Hit ");
-	}
-    return false;
+        var rays = [ //define a set of collision vectors
+            //new THREE.Vector3(0,1,0), new THREE.Vector3(0,-1,0), //up and down
+            new THREE.Vector3(1,0,0), new THREE.Vector3(-1,0,0), //east and west
+            new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,-1)  //south and north
+        ];
+      var caster = new THREE.Raycaster();
+      var distance = myUnitSz;
+      for (i = 0; i < rays.length; i += 1) {            
+            caster.set(neck.position, rays[i]); // We reset the raycaster to this (current) direction
+            // Test if we intersect with any obstacle mesh
+            var collisions = caster.intersectObjects(myLevelStruct.Cubes);
+            // And disable that direction if we do
+            if (collisions.length > 0 && collisions[0].distance <= distance) {
+                movementPredict[i] = false;
+            }
+    }
+    	            
+    return movementPredict;
 }
 //--Keyboard handling-- 
 function processKey(kCode) {
     //console.log(kCode);
-    switch (kCode) { 
+    var collideStrategy = processCollision();
+    switch (kCode) {
         case 37: //left arrow
             {   
                 //console.log("left");
-                if (processCollision("left")==false) {
+                if (collideStrategy[0]===true) {
                     neck.translateX(-Math.round(myUnitSz/4));
                 }
                 break;   }
         case 38: //up arrow
             {   
-                if (processCollision("forward")==false) {
+                if (collideStrategy[3]===true) {
                     neck.translateZ(-Math.round(myUnitSz/4));
                 }
                 //console.log("forward");                
                 break;   }
-        case 39:
+        case 39: //right
             {
-                if (processCollision("right")==false) {
+                if (collideStrategy[1]===true) {
                     neck.translateX(Math.round(myUnitSz/4));
                 }
                 break;   }
         case 40: //down arrow
             {   
                 //console.log("back");
-                if (processCollision("back")==false){
+                if (collideStrategy[2]===true){
                     neck.translateZ(Math.round(myUnitSz/4));
                 }
                 break;   }
