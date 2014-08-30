@@ -300,8 +300,13 @@ function defMainHall() {
     scene.add(northWall11); scene.add(northWall12); scene.add(northWall21); scene.add(simpleCeiling);
     scene.add(southWall); scene.add(eastWall); scene.add(westWall);
     scene.add(southPillar1); scene.add(southPillar2); scene.add(northPillar1); scene.add(northPillar2);
+    //some test crates
+    var myCube2 = defCube(myUnitSz, myUnitSz, myUnitSz, 0, defCrateMaterial(), new THREE.Vector3(-2*myUnitSz,Math.round(myUnitSz/2),-3*myUnitSz));
+    var myCube3 = defCube(myUnitSz, myUnitSz, myUnitSz, 0, defCrateMaterial(), new THREE.Vector3(3*myUnitSz,Math.round(myUnitSz/2),-4*myUnitSz));
+    scene.add(myCube2); scene.add(myCube3);
     //define collision boxes here
-    myLevelStruct.Cubes.push(southWall); myLevelStruct.Cubes.push(eastWall); myLevelStruct.Cubes.push(westWall);   
+    myLevelStruct.Cubes.push(southWall); myLevelStruct.Cubes.push(eastWall); myLevelStruct.Cubes.push(westWall); myLevelStruct.Cubes.push(northWall11);
+    myLevelStruct.Cubes.push(northWall12); myLevelStruct.Cubes.push(northWall21); myLevelStruct.Cubes.push(myCube2); myLevelStruct.Cubes.push(myCube3);
 }   
 // использование Math.round() даст неравномерное распределение!
 function getRandomInt(min, max)

@@ -64,23 +64,9 @@ function initStats() {
 /**
  * This function uses myLevelStruct from SceneConstructor to predict collisions during movement
  */
-function processCollision(/*moveDirection*/) {
+function processCollision(moveVec) {
     var dirStmtX=0; var dirStmtZ=0; var dirStmtY=0;
-    var movementPredict = new Array(true,true,true,true); //Where can we move: south, north, east, west (globally in the 3d world. 'true' means that there's no obstacle in thst dir)
-    /*switch (moveDirection) {
-    case "forward": {
-            dirStmtZ = -Math.round(myUnitSz/4);
-            break;        }
-    case "left": {
-            dirStmtX = -Math.round(myUnitSz/4);
-            break;        }
-    case "right": {
-            dirStmtX = Math.round(myUnitSz/4);
-            break;        }
-    case "back": {
-            dirStmtZ = Math.round(myUnitSz/4);
-            break;        }
-    }*/
+    //var movementPredict = new Array(true,true,true,true); //Where can we move: south, north, east, west (globally in the 3d world. 'true' means that there's no obstacle in thst dir)
         console.log ("collision check");
         var rays = [ //define a set of collision vectors
             //new THREE.Vector3(0,1,0), new THREE.Vector3(0,-1,0), //up and down
@@ -89,47 +75,74 @@ function processCollision(/*moveDirection*/) {
         ];
       var caster = new THREE.Raycaster();
       var distance = myUnitSz;
-      for (i = 0; i < rays.length; i += 1) {            
-            caster.set(neck.position, rays[i]); // We reset the raycaster to this (current) direction
+      //for (i = 0; i < rays.length; i += 1) {            
+            caster.set(neck.position, moveVec.normalize()); // We reset the raycaster to this (current) direction
             // Test if we intersect with any obstacle mesh
             var collisions = caster.intersectObjects(myLevelStruct.Cubes);
             // And disable that direction if we do
+            //if (collisions.length>0) { console.log(collisions[0].distance); }
             if (collisions.length > 0 && collisions[0].distance <= distance) {
-                movementPredict[i] = false;
+                return false;
             }
-    }
+    //}
     	            
-    return movementPredict;
+    return true;
 }
 //--Keyboard handling-- 
 function processKey(kCode) {
     //console.log(kCode);
-    var collideStrategy = processCollision();
+    //var collideStrategy = processCollision();
+    var collideStrategy = [true,true,true,true];
     switch (kCode) {
         case 37: //left arrow
             {   
                 //console.log("left");
-                if (collideStrategy[0]===true) {
+                //console.log(neck.position);
+                var startPnt = neck.position.clone();
+                neck.translateX(-Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                var endPnt = neck.position.clone();
+                neck.translateX(Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                if (processCollision(endPnt.sub(startPnt))) {
                     neck.translateX(-Math.round(myUnitSz/4));
                 }
                 break;   }
         case 38: //up arrow
             {   
-                if (collideStrategy[3]===true) {
+                var startPnt = neck.position.clone();
+                neck.translateZ(-Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                var endPnt = neck.position.clone();
+                neck.translateZ(+Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                if (processCollision(endPnt.sub(startPnt))) {
                     neck.translateZ(-Math.round(myUnitSz/4));
                 }
                 //console.log("forward");                
                 break;   }
         case 39: //right
             {
-                if (collideStrategy[1]===true) {
+                var startPnt = neck.position.clone();
+                neck.translateX(Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                var endPnt = neck.position.clone();
+                neck.translateX(-Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                if (processCollision(endPnt.sub(startPnt))) {
                     neck.translateX(Math.round(myUnitSz/4));
                 }
                 break;   }
         case 40: //down arrow
             {   
                 //console.log("back");
-                if (collideStrategy[2]===true){
+                var startPnt = neck.position.clone();
+                neck.translateZ(Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                var endPnt = neck.position.clone();
+                neck.translateZ(-Math.round(myUnitSz/4));
+                //console.log(neck.position);
+                if (processCollision(endPnt.sub(startPnt))){
                     neck.translateZ(Math.round(myUnitSz/4));
                 }
                 break;   }
