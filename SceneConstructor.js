@@ -215,7 +215,7 @@ function addCamera() {
         MovingCube.position.x = neck.position.x;
         MovingCube.position.z = neck.position.z;
         MovingCube.position.y = neck.position.y;
-        neck.add(MovingCube);
+        //neck.add(MovingCube);
     console.log("handler position: "+neck.position.x+";"+neck.position.y+";"+neck.position.z);        
     neck.add(camera);
     scene.add(neck);
@@ -228,8 +228,8 @@ function defScene() {
         addCamera();
     defMainHall();
     var pointLight = new THREE.PointLight(0xffffff);
-    pointLight.position.set(0, 150*myUnitSz, 0); 
-    scene.add(pointLight);
+    //pointLight.position.set(0, 150*myUnitSz, 0); 
+    //scene.add(pointLight);
     var light = new THREE.AmbientLight( 0x404040 ); // soft white light
     scene.add( light );
 }
@@ -301,12 +301,41 @@ function defMainHall() {
     scene.add(southWall); scene.add(eastWall); scene.add(westWall);
     scene.add(southPillar1); scene.add(southPillar2); scene.add(northPillar1); scene.add(northPillar2);
     //some test crates
-    var myCube2 = defCube(myUnitSz, myUnitSz, myUnitSz, 0, defCrateMaterial(), new THREE.Vector3(-2*myUnitSz,Math.round(myUnitSz/2),-3*myUnitSz));
+    var myCube2 = defCube(myUnitSz, myUnitSz, myUnitSz, 0, defCrateMaterial(), new THREE.Vector3(3*myUnitSz,Math.round(myUnitSz/2),-2*myUnitSz));
     var myCube3 = defCube(myUnitSz, myUnitSz, myUnitSz, 0, defCrateMaterial(), new THREE.Vector3(3*myUnitSz,Math.round(myUnitSz/2),-4*myUnitSz));
     scene.add(myCube2); scene.add(myCube3);
+    //trasparent texture (100% epic, but simple. no shaders)
+    var transparentPlane = new THREE.PlaneGeometry( 13*myUnitSz, 2*myUnitSz );
+    var planeTexture = THREE.ImageUtils.loadTexture('graphon/grate2.png');
+            planeTexture.wrapS = planeTexture.wrapT = THREE.RepeatWrapping;
+            planeTexture.repeat.set( 6, 1 ); 
+        var PlaneMaterial = new THREE.MeshBasicMaterial({map: planeTexture, side:THREE.DoubleSide,transparent:true,opacity:1.0});
+        var theplane = new THREE.Mesh( transparentPlane, PlaneMaterial );
+        scene.add(theplane);
+        theplane.position.x=4*myUnitSz; theplane.position.y=myUnitSz; theplane.position.z=Math.round(-1*myUnitSz);
+        theplane.rotateOnAxis(new THREE.Vector3(0, 1, 0), degInRad(90));
+    //======
+    //Load model
+    var loader = new THREE.JSONLoader(); // init the loader util
+    loader.load('models/android.js', function (geometry, materials) { // init loading
+    // create a new material
+    var material = new THREE.MeshFaceMaterial(materials); 
+    //material.color = new THREE.Color( 0xff0000 );
+    // create a mesh with models geometry and material
+    var mesh = new THREE.Mesh(
+        geometry,
+        material
+    );  
+    //mesh.material.color.setHex( 0xff0000 );
+    mesh.scale.x=7; mesh.scale.y=7; mesh.scale.z=7;
+    mesh.position.x=-3*myUnitSz; mesh.position.y = 0; mesh.position.z = -2*myUnitSz;
+    scene.add(mesh);
+    });
+    //======
     //define collision boxes here
     myLevelStruct.Cubes.push(southWall); myLevelStruct.Cubes.push(eastWall); myLevelStruct.Cubes.push(westWall); myLevelStruct.Cubes.push(northWall11);
     myLevelStruct.Cubes.push(northWall12); myLevelStruct.Cubes.push(northWall21); myLevelStruct.Cubes.push(myCube2); myLevelStruct.Cubes.push(myCube3);
+    myLevelStruct.Cubes.push(theplane); //javascript allows to store objects of different types and Cubes is just Array, without any additional limitations about type of objects
 }   
 // использование Math.round() даст неравномерное распределение!
 function getRandomInt(min, max)
