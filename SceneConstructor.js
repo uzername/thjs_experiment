@@ -227,9 +227,9 @@ function defScene() {
     scene.add( yobaplane2 ); 
         addCamera();
     defMainHall();
-    var pointLight = new THREE.PointLight(0xffffff);
-    //pointLight.position.set(0, 150*myUnitSz, 0); 
-    //scene.add(pointLight);
+    var pointLight = new THREE.PointLight(0xffffff, 0.4);
+    pointLight.position.set(0, 6*myUnitSz-1, 5*myUnitSz); 
+    scene.add(pointLight);
     var light = new THREE.AmbientLight( 0x404040 ); // soft white light
     scene.add( light );
 }
@@ -317,7 +317,7 @@ function defMainHall() {
     //======
     //Load model
     var loader = new THREE.JSONLoader(); // init the loader util
-    loader.load('models/android.js', function (geometry, materials) { // init loading
+    loader.load('models/shelf2.js', function (geometry, materials) { // init loading
     // create a new material
     var material = new THREE.MeshFaceMaterial(materials); 
     //material.color = new THREE.Color( 0xff0000 );
@@ -328,7 +328,7 @@ function defMainHall() {
     );  
     //mesh.material.color.setHex( 0xff0000 );
     mesh.scale.x=7; mesh.scale.y=7; mesh.scale.z=7;
-    mesh.position.x=-3*myUnitSz; mesh.position.y = 0; mesh.position.z = -2*myUnitSz;
+    mesh.position.x=Math.round(5.5*myUnitSz); mesh.position.y = 1; mesh.position.z = Math.round(-6.5*myUnitSz);
     scene.add(mesh);
     });
     //======
